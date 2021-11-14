@@ -14,8 +14,8 @@ public class XRPersonInteractable : MonoBehaviour
     GameObject currentEffect = null;
     [SerializeField]
     XRSimpleInteractable simpleInteractable;
-    [SerializeField]
-    XRGrabInteractable m_GrabInteractable;
+    // [SerializeField]
+    // XRGrabInteractable m_GrabInteractable;
     private XRBaseInteractor  m_MyFirstAction;
     bool m_Held;
     // Start is called before the first frame update
