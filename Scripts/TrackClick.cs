@@ -17,9 +17,7 @@ public class TrackClick : MonoBehaviour
     // public List<GameObject> allPeopleImages;
     public Texture2D[] allPeopleImagesArray;
     GameObject currentEffect = null;
-
     Texture2D currentImage;
-    ActionBasedController controller;
     [Serializable]
     public class PredictionResult {
         [JsonProperty(PropertyName = "Sentiment")]
@@ -42,14 +40,6 @@ public class TrackClick : MonoBehaviour
         // Debug.Log(allPeopleImagesArray.Length);
         avatar = popupWindow.transform.Find("RawImage").gameObject.GetComponent<RawImage>();
         rectTransform = popupWindow.transform.Find("RawImage").gameObject.GetComponent (typeof (RectTransform)) as RectTransform;
-        //VR Support//
-
-        controller = GetComponent<ActionBasedController>();
-        bool isPressed = controller.selectAction.action.ReadValue<bool>();
-        controller.selectAction.action.performed += Action_performed;
-    }
-    private void Action_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj) {
-        Debug.Log("Select Button is Pressed");
     }
     // Update is called once per frame
     void Update()
@@ -95,6 +85,7 @@ public class TrackClick : MonoBehaviour
                 
         }
     }
+    
     Texture2D AssignPersonImage(string gender) {
         Texture2D imageToAssign = allPeopleImagesArray[UnityEngine.Random.Range (0, allPeopleImagesArray.Length)];
         string[] imageInfo = imageToAssign.name.Split('_');
@@ -216,6 +207,8 @@ public class TrackClick : MonoBehaviour
                 // Debug.Log(sentimentInfo.sentiment);
                 // Debug.Log(sentimentInfo.gender);
                 AssignEmotion(currentTarget, sentimentInfo.sentiment);
+                // AssignEmotion(currentTarget, sentimentInfo.sentiment);
+
             }
             TurnOffPopup();
         }

@@ -6,14 +6,11 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class XRPersonInteractable : MonoBehaviour
 {
-    public GameObject[] emotionEffects;
-    public GameObject currentTarget;
-    // List<int> scannedPeople;
-    Dictionary<int, GameObject> scannedPeople = new Dictionary<int, GameObject>();
-    Dictionary<string, int> scanInfo = new Dictionary<string, int>();
-    GameObject currentEffect = null;
     [SerializeField]
     XRSimpleInteractable simpleInteractable;
+    [SerializeField]
+    GameObject popupWindow;
+    PopUpWindow popupWindowManager;
     // [SerializeField]
     // XRGrabInteractable m_GrabInteractable;
     private XRBaseInteractor  m_MyFirstAction;
@@ -21,34 +18,44 @@ public class XRPersonInteractable : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        currentTarget = transform.gameObject;
-
-        // m_GrabInteractable = GetComponent<XRGrabInteractable>();
-        // m_GrabInteractable.firstHoverEntered.AddListener(OnFirstHoverEntered);
-        // m_GrabInteractable.lastHoverExited.AddListener(OnLastHoverExited);
-        // m_GrabInteractable.selectEntered.AddListener(OnSelectEntered);
-        // m_GrabInteractable.selectExited.AddListener(OnSelectExited);
-        //  m_MyFirstAction += AssignRandomEmotion;
+        popupWindowManager = popupWindow.GetComponent<PopUpWindow>();
         simpleInteractable = GetComponent<XRSimpleInteractable>();
         simpleInteractable.selectEntered.AddListener(OnSelectEntered);
+        simpleInteractable.firstHoverEntered.AddListener(OnFirstHoverEntered);
+
     }   
 
     // Update is called once per frame
     void Update()
     {
     }
+    public void TurnOffPopup() {
+        if (popupWindow) 
+        {
+            popupWindow.SetActive(false);
+        }
+    }
+    public void TurnOnPopup() {
+        if (popupWindow) 
+        {
+            popupWindow.SetActive(true);
+        }
+    }
     protected virtual void OnSelectEntered(SelectEnterEventArgs args)
     {
         // m_MeshRenderer.material.color = s_UnityCyan;
-        m_Held = true;
-        Debug.Log("Selected");
-
+        Debug.Log("My person is clicked by VR");
+        
+        popupWindowManager.AssignTextureBasedOnName(transform.gameObject);
+        TurnOnPopup();
     }
 
     protected virtual void OnSelectExited(SelectExitEventArgs args)
     {
         // m_MeshRenderer.material.color = Color.white;
         m_Held = false;
+        // TurnOnPopup();
+
     }
 
     protected virtual void OnLastHoverExited(HoverExitEventArgs args)
@@ -67,55 +74,4 @@ public class XRPersonInteractable : MonoBehaviour
         // }
         Debug.Log("Hovered");
     }
-    public void AssignRandomEmotion() {
-        int r = Random.Range(0, emotionEffects.Length);
-        string randomEmotion = "happy";
-        if (r == 0) {
-            randomEmotion = "happy";
-        }
-        else if (r == 1) {
-            randomEmotion = "sad";
-        }
-        else if (r == 2) {
-            randomEmotion = "angry";
-        }
-        else if (r == 3) {
-            randomEmotion = "neutral";
-        }
-        AssignEmotion(currentTarget, randomEmotion);
-        // TurnOffPopup();
-
-    }
-    void AssignEmotion(GameObject go, string emotion) {
-        GameObject effectToAssign = null;
-        if (!scannedPeople.ContainsKey(go.GetInstanceID())) {
-            Debug.Log(go.name + " is " + emotion );
-
-            if (emotion.ToLower() == "happy") {
-            effectToAssign = emotionEffects[0];
-            }
-            else if (emotion.ToLower() == "sad") {
-                effectToAssign = emotionEffects[1];
-            }
-            else if (emotion.ToLower() == "angry") {
-                effectToAssign = emotionEffects[2];
-            }
-            else if (emotion.ToLower() == "neutral") {
-                effectToAssign = emotionEffects[3];
-            }
-            // if (currentEffect != null) {
-            //     GameObject.Destroy(currentEffect);
-            //     currentEffect = null;
-            // }
-            // effectToAssign = emotionEffects[2];
-            currentEffect = (GameObject) GameObject.Instantiate(effectToAssign, go.transform.position + new Vector3(0f, 2f, 0f), Quaternion.identity);
-            currentEffect.transform.parent = go.transform;
-            // scannedPeople.Add(currentTarget.GetInstanceID(), currentEffect);
-            // scanInfo[emotion] += 1;
-            // Debug.Log("Number of Scanned People: " + scannedPeople.Count);
-        }
-    }
-
-
-
 }
